@@ -16,7 +16,8 @@ let suktaSelect;
 let deitySelect;
 
 //visuals & animation
-let mandals = [];
+let mandalSpheres = [];
+let suktaBoxes = [];
 let camera;
 
 let api_url = init_url + mandal_url + sukta_url + sungfor_url;
@@ -31,16 +32,9 @@ function setup() {
     camera = createCamera();
     setCamera(camera);
     
-    for (i = 0; i < 10; i++) {
-        mandals.push({
-            size: random(25,40),
-            rotY: random(0.1, 0.8),
-            transX: i * 100,
-            transY: 0,
-            transZ: 0,
-            clr: color(random(80,255), random(80,255), random(80,255))
-        });
-    }
+    pixelDensity(1);
+    
+    console.log(mandalSpheres);
     
     mandalText = createP('Select Mandal (Book):');
     mandalText.position(50,510);
@@ -73,6 +67,8 @@ function setup() {
 }
 
 function clearSuktaOptions() {
+    mandalSpheres.length = 0;
+    
     suktas.length = 0;
     suktaNums.length = 0;    
 	document.getElementById("sukta").innerHTML = null;
@@ -81,6 +77,8 @@ function clearSuktaOptions() {
 }
 
 function clearDeityOptions() {
+    suktaBoxes.length = 0;
+    
     deities.length = 0;
     deityNames.length = 0;    
     document.getElementById("deity").innerHTML = null;
@@ -100,6 +98,19 @@ function getMandalData() {
     fetch(m_url)
     .then(response => response.json())
     .then(mandalData => updateSuktas(mandalData));
+    
+    //generate spheres based on mandal number
+    for (i = 0; i < mandalIndex; i++) {
+        mandalSpheres.push({
+            size: random(25,40),
+            rotY: random(0.1, 0.8),
+            transX: i * 100,
+            transY: 0,
+            transZ: 0,
+            clr: color(random(80,255), random(80,255), random(80,255))
+        });
+    }
+    //console.log(mandalSpheres);
 }
 
 function updateSuktas(mandalData) {
@@ -108,7 +119,7 @@ function updateSuktas(mandalData) {
     }
     suktaNums = [...new Set(suktas)];
     for (j = 0; j < suktaNums.length; j++) {
-        sukta.option(suktaNums[j]);
+        suktaSelect.option(suktaNums[j]);
     }
     console.log('there are ' + suktaNums.length + ' suktas');
 }
@@ -126,6 +137,21 @@ function getSuktaData() {
     fetch(s_url)
     .then(response => response.json())
     .then(suktaData => loadSukta(suktaData));
+    
+    //generate boxes based on sukta number
+    for (i = 0; i < suktaIndex; i++) {
+        suktaBoxes.push({
+            w: random(20,70),
+            h: random(20,70),
+            d: random(20,70),
+            rotY: random(1,3),
+            transX: random(-400, 400),
+            transY: random(200, 500),
+            transZ: random(-400, 400),
+            clr: color(random(180,255), random(180,255), random(180,255))
+        });
+    }
+    //console.log(suktaBoxes);
 }
 
 function loadSukta(suktaData) {
@@ -134,27 +160,32 @@ function loadSukta(suktaData) {
     }
     deityNames = [...new Set(deities)];
     for (j = 0; j < deityNames.length; j++) {
-        deity.option(deityNames[j]);
+        deitySelect.option(deityNames[j]);
     }
     console.log(suktaData);
 }
 
 function draw() {
     background(0);
-    camera.lookAt(0, 0, 0);
-    camera.setPosition(1600, -800, 0);
+    camera.lookAt(0, 200, 0);
+    camera.setPosition(1400, -500, 0);
+    
+    //orbitControl();
     
     noStroke();
-    //orbitControl();
     ambientLight(50);
     
     //sun
-    emissiveMaterial(255,255,250);
-    sphere(50);
-    lightFalloff(3,0,0);
+    push();
+    translate(0,-300,0);
+    emissiveMaterial(255,255,255);
+    sphere(100);
+    pop();
+    
+    lightFalloff(2.5,0,0);
     pointLight(255, 255, 200, 0, 0, 0);
     
-    for (let m of mandals) {
+    for (let m of mandalSpheres) {
         push();
         specularMaterial(m.clr);
         rotateY(frameCount * m.rotY)
@@ -167,9 +198,20 @@ function draw() {
         rotateX(90);
         noFill();
         stroke(100);
+        strokeWeight(5);
         ellipse(0, 0, 2*m.transX+200);
         pop();
     }
-    
+
+    for (let s of suktaBoxes) {
+        push();
+        specularMaterial(s.clr);
+        rotateY(frameCount * s.rotY);
+        translate(s.transX, s.transY, s.transZ);
+        stroke(0);
+        box(s.w, s.h, s.d);
+        pop();
+        
+    }
 
 }
