@@ -1,5 +1,6 @@
-rigVeda = [];
-suktas = [];
+let rigVeda = [];
+let suktas = [];
+let suktaNums = [];
 
 let init_url = 'https://sheetlabs.com/IND/rv?';
 let mandal_url = '';
@@ -27,6 +28,7 @@ function setup() {
     mandal.changed(getMandalData);
 
     sukta = createSelect();
+    sukta.id("sukta");
     sukta.position(200,500);
     sukta.size(100,25);
     
@@ -43,8 +45,8 @@ function setup() {
 
 function getMandalData() {
     //set mandal_num
-    let m_num = mandal.value();
-    mandal_url = 'mandal=' + m_num;
+    let mandalNum = mandal.value();
+    mandal_url = 'mandal=' + mandalNum;
     //console.log(mandal_url);
     
     api_url = init_url + mandal_url + sukta_url + sungfor_url;
@@ -55,28 +57,34 @@ function getMandalData() {
     .then(mandalData => loadMandal(mandalData));
 }
 
+function clearOptions() {
+	document.getElementById("sukta").innerHTML = null;
+}
+
 function loadMandal(mandalData) {
     rigVeda = mandalData;
     console.log(rigVeda);
     
-    //clear suktas array
+    clearOptions(); 
+    //clear suktas array and suktaNums array
     if (suktas.length != 0) {
         suktas.length = 0
     }
-    console.log(suktas.length);
+    if (suktaNums.length != 0) {
+        suktaNums.length = 0
+    }
+    //console.log(suktas.length);
+    //console.log(suktaNums.length);
     
     //update suktas
     for (i = 0; i < rigVeda.length; i++) {
         suktas.push(rigVeda[i].sukta);
     }
-    let suktaNums = [...new Set(suktas)];
-    console.log(suktas.length);
-    //console.log(suktaNums);
-    
+    suktaNums = [...new Set(suktas)];
     for (j = 0; j < suktaNums.length; j++) {
         sukta.option(suktaNums[j]);
     }
-    console.log(sukta.option.length);
+    console.log('there are ' + suktaNums.length + ' suktas');
 
 }
 
