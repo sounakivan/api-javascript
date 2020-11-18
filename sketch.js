@@ -10,10 +10,12 @@ let mandal_url = '';
 let sukta_url = '';
 let sungfor_url = '';
 
-//UI
+//UI and DOM elements
 let mandalSelect;
 let suktaSelect;
 let deitySelect;
+let sungforName;
+let sungbyName;
 
 //visuals & animation
 let mandalSpheres = [];
@@ -34,13 +36,16 @@ function setup() {
     
     pixelDensity(1);
     
-    console.log(mandalSpheres);
+    uibox = createDiv();
+    uibox.id('uibox');
+    uibox.size(800,100);
     
     mandalText = createP('Select Mandal (Book):');
     mandalText.position(50,510);
     mandalSelect = createSelect();
     mandalSelect.position(50,550);
     mandalSelect.size(150,25);
+    mandalSelect.option('None');
     //there are 10 mandals in the rig veda
     for (i = 0; i < 10; i++) {
         mandalSelect.option(i+1);
@@ -54,6 +59,7 @@ function setup() {
     suktaSelect.id("sukta");
     suktaSelect.position(300,550);
     suktaSelect.size(150,25);
+    suktaSelect.option('None');
     
     suktaSelect.changed(getSuktaData);
     
@@ -63,7 +69,13 @@ function setup() {
     deitySelect.id("deity");
     deitySelect.position(550,550);
     deitySelect.size(150,25);
+    deitySelect.option('None');
     
+    deitySelect.changed(displayNameData);
+    
+    sungforName = createP('');
+    sungforName.id('for-name');
+    sungforName.position(width/2-20, 50);
 }
 
 function clearSuktaOptions() {
@@ -72,6 +84,7 @@ function clearSuktaOptions() {
     suktas.length = 0;
     suktaNums.length = 0;    
 	document.getElementById("sukta").innerHTML = null;
+    suktaSelect.option('None');
     
     clearDeityOptions();
 }
@@ -79,9 +92,12 @@ function clearSuktaOptions() {
 function clearDeityOptions() {
     suktaBoxes.length = 0;
     
+    document.getElementById("for-name").textContent = '';
+    
     deities.length = 0;
     deityNames.length = 0;    
     document.getElementById("deity").innerHTML = null;
+    deitySelect.option('None');
 }
 
 function getMandalData() {
@@ -125,7 +141,7 @@ function updateSuktas(mandalData) {
 }
 
 function getSuktaData() {
-    let suktaIndex = suktaSelect.value();
+    let suktaIndex = suktaSelect.selected();
     sukta_url = '&sukta=' + suktaIndex;
 //    console.log(sukta_url);
     
@@ -165,9 +181,15 @@ function loadSukta(suktaData) {
     console.log(suktaData);
 }
 
+function displayNameData(){
+    sungforName = deitySelect.selected();
+    document.getElementById("for-name").textContent = sungforName;
+    console.log(sungforName);
+}
+
 function draw() {
     background(0);
-    camera.lookAt(0, 200, 0);
+    camera.lookAt(0, 100, 0);
     camera.setPosition(1400, -500, 0);
     
     //orbitControl();
@@ -197,7 +219,7 @@ function draw() {
         angleMode(DEGREES);
         rotateX(90);
         noFill();
-        stroke(100);
+        stroke(250);
         strokeWeight(5);
         ellipse(0, 0, 2*m.transX+200);
         pop();
@@ -208,10 +230,18 @@ function draw() {
         specularMaterial(s.clr);
         rotateY(frameCount * s.rotY);
         translate(s.transX, s.transY, s.transZ);
-        stroke(0);
-        box(s.w, s.h, s.d);
+        stroke(255);
+        box(s.w, s.h, s.d,);
         pop();
         
     }
+    
+    //earth
+    push();
+    translate(0,750,0);
+    stroke(0);
+    emissiveMaterial(150,200,255,30);
+    ellipsoid(1200,600,1200,24,24);
+    pop();
 
 }
