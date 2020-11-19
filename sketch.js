@@ -41,9 +41,9 @@ function setup() {
     uibox.size(800,100);
     
     mandalText = createP('Select Mandal (Book):');
-    mandalText.position(50,510);
+    mandalText.position(50,580);
     mandalSelect = createSelect();
-    mandalSelect.position(50,550);
+    mandalSelect.position(50,620);
     mandalSelect.size(150,25);
     mandalSelect.option('None');
     //there are 10 mandals in the rig veda
@@ -54,20 +54,20 @@ function setup() {
     mandalSelect.changed(getMandalData);
 
     suktaText = createP('Select Sukta (Hymn):');
-    suktaText.position(300,510);
+    suktaText.position(300,580);
     suktaSelect = createSelect();
     suktaSelect.id("sukta");
-    suktaSelect.position(300,550);
+    suktaSelect.position(300,620);
     suktaSelect.size(150,25);
     suktaSelect.option('None');
     
     suktaSelect.changed(getSuktaData);
     
     deityText = createP('Who is it sung for:');
-    deityText.position(550,510);
+    deityText.position(550,580);
     deitySelect = createSelect();
     deitySelect.id("deity");
-    deitySelect.position(550,550);
+    deitySelect.position(550,620);
     deitySelect.size(150,25);
     deitySelect.option('None');
     
@@ -75,7 +75,7 @@ function setup() {
     
     sungforName = createP('');
     sungforName.id('for-name');
-    sungforName.position(width/2-20, 50);
+    sungforName.position(width/2-20, 120);
 }
 
 function clearSuktaOptions() {
